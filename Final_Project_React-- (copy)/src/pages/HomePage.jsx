@@ -26,7 +26,11 @@ function HomePage() {
     handleIngredientFilter,
   } = useMeals()
 
-  const [favorites, setFavorites] = useLocalStorage('favorites', [])
+  const currentUser = localStorage.getItem('currentUser')
+  const [favorites, setFavorites] = useLocalStorage(
+    `favorites_${currentUser}`,
+    []
+  )
 
   function toggleFavorite(meal) {
     const exists = favorites.some((fav) => fav.idMeal === meal.idMeal)
