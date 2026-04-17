@@ -1,6 +1,9 @@
-import { useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
+import PropTypes from 'prop-types'
 
-function useAuth() {
+const AuthContext = createContext()
+
+export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
 
   useEffect(() => {
@@ -21,18 +24,16 @@ function useAuth() {
     const storedPassword = localStorage.getItem(`user_${trimmedUsername}`)
 
     if (storedPassword) {
-      if (storedPassword === trimmedPassword) {
-        localStorage.setItem('currentUser', trimmedUsername)
-        setUser(trimmedUsername)
-        return { success: true }
+      if (storedPassword !== trimmedPassword) {
+        return { success: false, message: 'Incorrect password.' }
       }
-
-      return { success: false, message: 'Incorrect password.' }
+    } else {
+      localStorage.setItem(`user_${trimmedUsername}`, trimmedPassword)
     }
 
-    localStorage.setItem(`user_${trimmedUsername}`, trimmedPassword)
     localStorage.setItem('currentUser', trimmedUsername)
     setUser(trimmedUsername)
+
     return { success: true }
   }
 
@@ -41,7 +42,17 @@ function useAuth() {
     setUser(null)
   }
 
-  return { user, login, logout }
+  return (
+    <AuthContext.Provider value={{ user, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  )
 }
 
-export default useAuth
+AuthProvider.propTypes = {
+  children: PropTypes.node.isRequired,
+}
+
+export function useAuth() {
+  return useContext(AuthContext)
+}

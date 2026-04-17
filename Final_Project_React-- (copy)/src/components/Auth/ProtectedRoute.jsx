@@ -1,10 +1,11 @@
 import PropTypes from 'prop-types'
 import { Navigate } from 'react-router-dom'
+import { useAuth } from '../../context/AuthContext'
 
 function ProtectedRoute({ children }) {
-  const currentUser = localStorage.getItem('currentUser')
+  const { user } = useAuth()
 
-  if (!currentUser) {
+  if (!user) {
     return <Navigate to="/login" replace />
   }
 
