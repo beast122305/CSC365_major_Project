@@ -16,6 +16,7 @@ function App() {
       <main className="container py-4">
         <Routes>
           <Route path="/login" element={<LoginPage />} />
+
           <Route
             path="/"
             element={
@@ -24,6 +25,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+
           <Route
             path="/recipe/:id"
             element={
@@ -32,6 +34,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+
           <Route path="/about" element={<AboutPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
