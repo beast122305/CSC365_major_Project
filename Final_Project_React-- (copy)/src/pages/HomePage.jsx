@@ -27,9 +27,15 @@ function HomePage() {
   } = useMeals()
 
   const currentUser = localStorage.getItem('currentUser')
+
   const [favorites, setFavorites] = useLocalStorage(
     `favorites_${currentUser}`,
     []
+  )
+
+  const [ratings, setRatings] = useLocalStorage(
+    `ratings_${currentUser}`,
+    {}
   )
 
   function toggleFavorite(meal) {
@@ -40,6 +46,13 @@ function HomePage() {
     } else {
       setFavorites([...favorites, meal])
     }
+  }
+
+  function handleRate(mealId, stars) {
+    setRatings({
+      ...ratings,
+      [mealId]: stars,
+    })
   }
 
   return (
@@ -77,6 +90,8 @@ function HomePage() {
           meals={meals}
           favorites={favorites}
           onToggleFavorite={toggleFavorite}
+          ratings={ratings}
+          onRate={handleRate}
         />
       )}
     </>

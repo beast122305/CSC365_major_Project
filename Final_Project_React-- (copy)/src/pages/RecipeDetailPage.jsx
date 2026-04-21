@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom'
 import NotesForm from '../components/Meals/NotesForm'
 import LoadingSpinner from '../components/Common/LoadingSpinner'
 import ErrorMessage from '../components/Common/ErrorMessage'
+import StarRating from '../components/Meals/StarRating'
 import { lookupMealById } from '../services/mealApi'
 import { extractIngredients } from '../utils/helpers'
 import useLocalStorage from '../hooks/useLocalStorage'
@@ -12,7 +13,10 @@ function RecipeDetailPage() {
   const [meal, setMeal] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-  const [notes, setNotes] = useLocalStorage('recipeNotes', {})
+
+  const currentUser = localStorage.getItem('currentUser')
+  const [notes, setNotes] = useLocalStorage(`notes_${currentUser}`, {})
+  const [ratings, setRatings] = useLocalStorage(`ratings_${currentUser}`, {})
 
   useEffect(() => {
     async function loadMeal() {
@@ -38,6 +42,13 @@ function RecipeDetailPage() {
     })
   }
 
+  function handleRate(stars) {
+    setRatings({
+      ...ratings,
+      [id]: stars,
+    })
+  }
+
   if (loading) return <LoadingSpinner />
   if (error) return <ErrorMessage message={error} />
   if (!meal) return <p>Recipe not found.</p>
@@ -54,6 +65,12 @@ function RecipeDetailPage() {
 
       <p><strong>Category:</strong> {meal.strCategory}</p>
       <p><strong>Area:</strong> {meal.strArea}</p>
+
+      <h2 className="mt-4">Your Rating</h2>
+      <StarRating
+        value={ratings[id] || 0}
+        onRate={handleRate}
+      />
 
       <h2 className="mt-4">Instructions</h2>
       <p>{meal.strInstructions}</p>

@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
+import StarRating from './StarRating'
 
-function MealCard({ meal, isFavorite, onToggleFavorite }) {
+function MealCard({ meal, isFavorite, onToggleFavorite, rating, onRate }) {
   return (
     <div className="col-md-4 mb-4">
       <div className="card h-100 shadow-sm">
@@ -14,7 +15,12 @@ function MealCard({ meal, isFavorite, onToggleFavorite }) {
             <strong>Category:</strong> {meal.strCategory || 'N/A'}
           </p>
 
-          <div className="mt-auto d-flex gap-2">
+          <StarRating
+            value={rating}
+            onRate={(stars) => onRate(meal.idMeal, stars)}
+          />
+
+          <div className="mt-auto d-flex gap-2 flex-wrap">
             <Link className="btn btn-primary" to={`/recipe/${meal.idMeal}`}>
               View Details
             </Link>
@@ -36,6 +42,8 @@ MealCard.propTypes = {
   meal: PropTypes.object.isRequired,
   isFavorite: PropTypes.bool.isRequired,
   onToggleFavorite: PropTypes.func.isRequired,
+  rating: PropTypes.number.isRequired,
+  onRate: PropTypes.func.isRequired,
 }
 
 export default MealCard
